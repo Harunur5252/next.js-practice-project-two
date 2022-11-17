@@ -35,7 +35,8 @@ export async function getStaticProps({params}){
   return {
     props:{
       pokemon : await resp.json()
-    }
+    },
+    revalidate:30, // if you want to get update form server after 30 second. it's happen only in static site generation if you want to update this case.
   }
 }
 
