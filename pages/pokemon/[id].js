@@ -4,8 +4,34 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../../styles/Details.module.css'
 
-export async function getServerSideProps({params:{id}}){
-  const resp = await fetch(`https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${id}.json`)
+// getting for server side rendering
+// export async function getServerSideProps({params:{id}}){
+//   const resp = await fetch(`https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${id}.json`)
+//   return {
+//     props:{
+//       pokemon : await resp.json()
+//     }
+//   }
+// }
+
+
+// getting for static site generation and generate paths for all 
+export async function getStaticPaths(){
+  const resp = await fetch(`https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json`)
+  const pokemon = await resp.json()
+  return {
+      paths:pokemon?.map((pokemon) => ({
+        params: { id: pokemon?.id?.toString() },
+      })),
+      fallback:false
+    }
+  }
+
+
+
+// getting for static site generation
+export async function getStaticProps({params}){
+  const resp = await fetch(`https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${params.id}.json`)
   return {
     props:{
       pokemon : await resp.json()
@@ -14,6 +40,7 @@ export async function getServerSideProps({params:{id}}){
 }
 
 function Details({pokemon}) {
+    // getting for client side rendering
     // const {query:{id}} = useRouter()
     // const [pokemon,setPokemon] = useState(null)
     // useEffect(() => {
